@@ -1,0 +1,13 @@
+# Credenciais — nunca subir para o GitHub
+credentials.json
+credentialsOutput.json
+tokenLLT.json
+tokenOutput.json
+
+# Arquivos Python temporários
+__pycache__/
+*.pyc
+.env
+
+# VSCode
+.vscode/

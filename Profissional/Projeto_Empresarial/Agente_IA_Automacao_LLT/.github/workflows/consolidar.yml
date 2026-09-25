@@ -1,0 +1,38 @@
+name: Consolidação Automática — Previsão Passageiros LLT
+on:
+  schedule:
+  - cron: '11 05 * * *'   # 07h10 Brasília (UTC-3) todos os dias
+  - cron: '12 18 * * *'   # 18h10 Brasília (UTC-3) todos os dias
+  workflow_dispatch:        # permite rodar manualmente também
+
+jobs:
+  consolidar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Rodar consolidação
+        env:
+          GOOGLE_TOKEN:           ${{ secrets.GOOGLE_TOKEN }}
+          GOOGLE_CREDENTIALS:     ${{ secrets.GOOGLE_CREDENTIALS }}
+          SHEET_ID:               ${{ secrets.SHEET_ID }}
+          GOOGLE_TOKEN_2:         ${{ secrets.GOOGLE_TOKEN_2 }}
+          GOOGLE_CREDENTIALS_2:   ${{ secrets.GOOGLE_CREDENTIALS_2 }}
+          SHEET_ID_2:             ${{ secrets.SHEET_ID_2 }}
+          DRIVE_FILE_ID:          ${{ secrets.DRIVE_FILE_ID }}
+        run: python src/consolidar.py
+
+      - name: Upload resultado como Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Previsao_Passageiros_LLT_GitHub
+          path: Previsao_Passageiros_LLT_GitHub.xlsx
